@@ -1,40 +1,33 @@
+import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-from stream import start_streaming, stop_streaming, check_status
-from keep_alive import keep_alive
-import config
 
-app = ApplicationBuilder().token("config.8363849977:AAF00Fv0TkNoPG-F9ORpk2DloAVe3e2x94k").build()
+# Bot config
+import config  # Make sure this file has BOT_TOKEN and OWNER_ID
 
-is_streaming = False
+logging.basicConfig(level=logging.INFO)
 
+# /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global is_streaming
-    if is_streaming:
-        await update.message.reply_text("Stream already running.")
-    else:
-        is_streaming = True
-        await update.message.reply_text("Starting stream...")
-        start_streaming()
-        await update.message.reply_text("Stream started.")
+    if update.effective_user.id != config.OWNER_ID:
+        return await update.message.reply_text("❌ You are not authorized to control this bot.")
+    await update.message.reply_text("✅ Live stream started (dummy response)")
 
+# /stop command
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global is_streaming
-    if not is_streaming:
-        await update.message.reply_text("Stream is not running.")
-    else:
-        stop_streaming()
-        is_streaming = False
-        await update.message.reply_text("Stream stopped.")
+    if update.effective_user.id != config.OWNER_ID:
+        return await update.message.reply_text("❌ You are not authorized to control this bot.")
+    await update.message.reply_text("🛑 Live stream stopped (dummy response)")
 
+# /status command
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Streaming ✅" if check_status() else "Not streaming ❌")
+    if update.effective_user.id != config.OWNER_ID:
+        return await update.message.reply_text("❌ You are not authorized to control this bot.")
+    await update.message.reply_text("📡 Live stream is currently running (dummy status)")
 
+app = ApplicationBuilder().token(config.BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("stop", stop))
 app.add_handler(CommandHandler("status", status))
 
-keep_alive()
 app.run_polling()
-
-

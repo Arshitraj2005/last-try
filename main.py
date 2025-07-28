@@ -4,7 +4,7 @@ from stream import start_streaming, stop_streaming, check_status
 from keep_alive import keep_alive
 import config
 
-app = ApplicationBuilder().token(config.BOT_TOKEN).build()
+app = ApplicationBuilder().token("config.8363849977:AAF00Fv0TkNoPG-F9ORpk2DloAVe3e2x94k").build()
 
 is_streaming = False
 
